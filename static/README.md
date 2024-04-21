@@ -36,82 +36,73 @@ Now that we have the config file we can start writing the mod. The main file of 
 ```js
 // index.js
 
-// Run the code inside a function to make it isolated from the rest of the game and other mods.
-class exampleMod {
-    console.log("Loading example-mod!");
-    // Create an instance of the modding API for this mod.
-    // const exampleModAPI = new MimlAPI();
+// create your mod class extending the mimlAPI
+class ExampleMod extends MimlAPI {
+    constructor() {
+        // use your mods name
+        super('exampleMod');
+        console.log('Loading example mod');
+
+        // run the main code
+        this.main();
+    }
+
+    // put your mods code in here
+    main() {
+        console.log('wow! my really cool code for my really cool mod!');
+    }
 }
+
+// run your mod
+new ExampleMod();
 ```
 
-Great! Now we have a mod, very basic but its a mod. Lets get it running in the game. Just pop it in the mods folder and run the game. You should see the message in the console and the audio changed! (F12)
+Great! Now we have a mod, very basic but its a mod. Lets get it running in the game. Just pop it in the mods folder and run the game. You should see the messages in the console! (F12)
 Look at the [API](#modding-api) section for more information on what you just did and what else you can do.
 
 # Modding API
 
 ## Functions
 
-### captureRequest
-Used to capture both xml and fetch requests and return custom responses.
-
-Parameters:
-- `url`: The url to capture.
-- `redirect`: The local to redirect to. (it is **strongly** recommended to only use local files but the there isn't hard enforcement other than you have to figure it out yourself.)
+### awaitGameLoad
+Will wait for the player object to exist (in a game).
 
 ```js
-// redirect request for media/SFX_Battle_Attack_Bite.webm to a local sfx/Bite.webm
-api.captureRequest('media/SFX_Battle_Attack_Bite.webm', 'cool-mod/assets/sfx/Bite.webm');
-
-// redirect request for Data/cards.json to a local cards.json
-api.captureRequest('Data/cards.json', 'cool-mod/assets/cards.json');
-
+await this.awaitGameLoad();
 ```
 
-> ### captureXML
-Used to capture xml requests and return custom responses. 
-
-Use [captureRequest](#capturerequest) if you are unsure on the request type.*
-
-Parameters:
-- `url`: The url to capture.
-- `redirect`: The local to redirect to. (it is **strongly** recommended to only use local files but the there isn't hard enforcement other than you have to figure it out yourself.)
+### awaitRuntimeLoad
+Will wait for the runtime to exist.
 
 ```js
-// redirect request for Data/cards.json to a local cards.json
-api.captureXML('Data/cards.json', 'cool-mod/assets/cards.json');
+await this.awaitRuntimeLoad()
 ```
 
->### captureFetch
-Used to capture fetch requests and return custom responses. *Use [captureRequest](#capturerequest) if you are unsure on the request type.*
+### recipe.modify
+Modify an existing recipe.
 
-Parameters:
-- `url`: The url to capture.
-- `redirect`: The local to redirect to. (it is **strongly** recommended to only use local files but the there isn't hard enforcement other than you have to figure it out yourself.)
+- method: string - The method to modify (e.g. "player", "furnace", "workbench")
+- name: string - The name of the recipe to modify
+- materials: Array - The materials to set the recipe to (e.g. "wood:3,stone:2")
+- locked: boolean - Don't know? (optional)
+- hidden: boolean - Don't know? (optional)
+- priority: number - Quest completed to unlock (optional) (e.g. "blacksmith quest1")
+- verySpecial: boolean - Don't know? (optional)
 
 ```js
-// redirect request for media/SFX_Battle_Attack_Bite.webm to a local sfx/Bite.webm
-api.captureFetch('media/SFX_Battle_Attack_Bite.webm', 'cool-mod/assets/sfx/Bite.json');
+this.recipe.modify("player", "gate", "wood:3,store:2");
 ```
 
-## Events
->### Request
-Called when a request is redirected.
+### card.modify
 
-**event.detail:**
-- `url`: The original url of the request.
-- `redirect`: The redirect url of the request.
-
-```js
-mimlAPI.addEventListener('request', (event) => {
-    console.log(`request: ${event.detail.url} ${event.detail.redirect}`);
-});
-```
+Coming soon. I hate the game engine :/
 
 # Utils
 ## Serving files
-To access local files you let miml serve them for you. To do this you need to put any files in an `assets` folder in the root of the mod. They will then be available at `http://localhost:5131/mods/<mod name>/assets/<file path>`. For example if you have a file at `cool-mod/assets/sfx/Bite.webm` you can access it at `http://localhost:5131/mods/cool-mod/assets/sfx/Bite.webm`.
+To access local files you let miml serve them for you. To do this you need to put any files in an `assets` folder in the root of the mod. They will then be available at `http://localhost:5131/mods/<mod name>/assets/<file path>`. For example if you have a file at `example-mod/assets/sfx/Bite.webm` you can access it at `http://localhost:5131/mods/example-mod/assets/sfx/Bite.webm`.
 
-Any mimlAPI function will write the `http://localhost:5131/mods` part for you so you can just use the relative path. (e.g. `cool-mod/assets/sfx/Bite.webm`)
+## Runtime
+MiMLauncher gives an easy way of talking to the game runtime, just use the global variable `miml.runtime`
 
 # Donate
 If you have found the mod loader useful and would like to support me you can do so on my [ko-fi](https://ko-fi.com/J3J2R58HH).
