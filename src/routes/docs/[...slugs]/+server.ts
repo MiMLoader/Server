@@ -1,8 +1,8 @@
 import { Elysia } from 'elysia';
 
 const app = new Elysia({ prefix: '/docs' })
-    .get('/', Bun.file('static/docs.html'))
-    .get('/README.md', Bun.file('static/README.md'));
+    .get('/', Bun.file('docs.html'))
+    .get('/README.md', Bun.file('docs.md'));
 
 type RequestHandler = (v: { request: Request; }) => Response | Promise<Response>;
 
