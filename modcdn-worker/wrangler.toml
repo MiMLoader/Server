@@ -1,0 +1,12 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "modcdn-worker"
+main = "src/index.js"
+compatibility_date = "2024-04-19"
+compatibility_flags = ["nodejs_compat"]
+
+account_id = "4e61b8b48da003014dfc7e4c4c0c9dda"
+workers_dev = true
+
+[[r2_buckets]]
+binding = "MOD_BUCKET"
+bucket_name = "mods"

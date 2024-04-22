@@ -29,14 +29,14 @@
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<Label for="version">Version</Label>
+		<Label for={`version-${mod.author}-${mod.name}`}>Version</Label>
 		<Select.Root
 			{selected}
 			onSelectedChange={(v) => {
 				v && ((selected.label = v.label), (selected.value = v.value));
 			}}
 		>
-			<Select.Trigger id={`version-${mod.name}`}>
+			<Select.Trigger id={`version-${mod.author}-${mod.name}`}>
 				<Select.Value />
 			</Select.Trigger>
 			<Select.Content>
@@ -57,7 +57,7 @@
 					variant="secondary"
 					on:click={() => {
 						window.open(
-							`/mods/${mod.author}/${mod.name}/${selected.value}?download`,
+							`/mods/${mod.author}/${mod.name}/download?version=${selected.value}`,
 						);
 					}}>Manual</Button
 				>
@@ -79,7 +79,7 @@
 							<AlertDialog.Action
 								on:click={() => {
 									window.open(
-										`/mods/${mod.author}/${mod.name}/${selected.value}?download`,
+										`/mods/${mod.author}/${mod.name}/download?version=${selected.value}`,
 									);
 								}}>Manual Install</AlertDialog.Action
 							>
@@ -93,6 +93,6 @@
 
 <style>
 	:global(.clamp) {
-		width: clamp(375px, 645px, 100%);
+		width: clamp(345px, 400px, 400px);
 	}
 </style>
