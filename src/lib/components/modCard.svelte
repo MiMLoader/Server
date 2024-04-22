@@ -16,7 +16,7 @@
 	};
 </script>
 
-<Card.Root class="w-[300px]">
+<Card.Root class="m-4 clamp">
 	<Card.Header>
 		<Card.Title>{mod.name}</Card.Title>
 		<Card.Description>{mod.description}</Card.Description>
@@ -36,7 +36,7 @@
 				v && ((selected.label = v.label), (selected.value = v.value));
 			}}
 		>
-			<Select.Trigger id="version">
+			<Select.Trigger id={`version-${mod.name}`}>
 				<Select.Value />
 			</Select.Trigger>
 			<Select.Content>
@@ -90,3 +90,9 @@
 		</Popover.Root>
 	</Card.Footer>
 </Card.Root>
+
+<style>
+	:global(.clamp) {
+		width: clamp(375px, 645px, 100%);
+	}
+</style>
