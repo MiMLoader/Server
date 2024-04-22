@@ -15,7 +15,11 @@ Creating a mod with miml is very simple. First is the config file (mod.json), th
     "dependencies": [
         "example-dependency"
     ],
-    "priority": 1
+    "priority": 1,
+    "tags": [
+        "card",
+        "recipe"
+    ]
 }
 ```
 
@@ -29,6 +33,7 @@ Lets go over each of these fields:
 - `main`: The main file of the mod, this is the file that will be executed when the mod is loaded. (relative to the mod root)
 - `dependencies`: A list of dependencies that the mod requires. (should be the link ending of the mod on mod.io)
 - `priority`: The priority of the mod, this is used to determine the order in which mods are loaded. (lower number = lower priority, 5 should only be used for things like APIs)
+- `tags`: (optional) List of tags that describe the mods function.
 
 You should put the config file you just created in a folder with the same name as the mod. (`e.g. example-mod/mod.json`)
 

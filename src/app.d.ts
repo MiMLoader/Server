@@ -10,4 +10,10 @@ declare global {
 	}
 }
 
-export {};
+export interface Mod {
+	author: string;
+	name: string;
+	description: string;
+	versions: (string)[];
+	tags?: (string)[] | null;
+}
