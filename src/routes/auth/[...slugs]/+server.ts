@@ -7,14 +7,13 @@ const app = new Elysia({ prefix: '/auth' });
 if (!Bun.env.DISCORD_SECRET) throw new Error('Add discord secret to env file');
 const oauth2 = new DiscordAuth('1179513611719295106', Bun.env.DISCORD_SECRET, 'http://localhost:5173/auth/callback', [Scopes.IDENTIFY]);
 
-
 app.get('/', ({ set }) => {
     const oauth2Link = oauth2.getAuthUrl();
     set.redirect = oauth2Link;
     return 'redirecting to discord';
 });
 
-app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar } }) => {
+app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar, username } }) => {
     if (!code) {
         set.status = 'Bad Request';
         return;
@@ -25,11 +24,12 @@ app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar } }
 
     bearer.set({
         value: accessToken.access_token,
-        httpOnly: true,
         path: '/',
         maxAge: accessToken.expires_in,
         expires: new Date(accessToken.expires_in),
-        sameSite: 'strict',
+        sameSite: 'none',
+        httpOnly: true,
+        secure: true,
     });
 
     avatar.set({
@@ -37,18 +37,34 @@ app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar } }
         path: '/',
         maxAge: accessToken.expires_in,
         expires: new Date(accessToken.expires_in),
-        sameSite: 'strict',
+        sameSite: 'none',
         httpOnly: false,
+        secure: true,
+    });
+
+    username.set({
+        value: userData.username,
+        path: '/',
+        maxAge: accessToken.expires_in,
+        expires: new Date(accessToken.expires_in),
+        sameSite: 'none',
+        httpOnly: false,
+        secure: true,
     });
 
     set.redirect = '/';
     set.status = 'Permanent Redirect';
-
     return 'Redirecting';
 });
 
-app.get('/avatar', () => {
+app.get('/logout', ({ cookie: { bearer, avatar, username }, set }) => {
+    bearer.remove();
+    // avatar.remove();
+    // username.remove();
 
+    set.redirect = '/';
+    set.status = 'Permanent Redirect';
+    return 'Redirecting';
 });
 
 type RequestHandler = (v: { request: Request; }) => Response | Promise<Response>;
