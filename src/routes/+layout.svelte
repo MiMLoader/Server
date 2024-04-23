@@ -1,10 +1,24 @@
 <script lang="ts">
-	import '../app.pcss';
-	import type { LayoutData } from './$types';
+	import { page } from '$app/stores';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { Toaster } from '$lib/components/ui/sonner';
+	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import '../app.pcss';
+	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
+
+	onMount(() => {
+		switch ($page.url.searchParams.get('referer')) {
+			case '/auth/logout':
+				toast.success('You are logged out.');
+				break;
+			default:
+				break;
+		}
+	});
 </script>
 
 <nav
@@ -54,6 +68,8 @@
 		</li>
 	</ul>
 </nav>
+
+<Toaster />
 
 <span class="block mb-10" />
 <slot />

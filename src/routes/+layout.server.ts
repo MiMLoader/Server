@@ -3,5 +3,5 @@ export function load({ cookies }) {
         bearer: cookies.get('bearer'),
         username: cookies.get('username'),
         avatar: cookies.get('avatar'),
-    }
+    };
 };

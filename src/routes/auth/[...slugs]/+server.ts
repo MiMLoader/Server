@@ -38,7 +38,7 @@ app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar, us
         maxAge: accessToken.expires_in,
         expires: new Date(accessToken.expires_in),
         sameSite: 'none',
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
     });
 
@@ -48,7 +48,7 @@ app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar, us
         maxAge: accessToken.expires_in,
         expires: new Date(accessToken.expires_in),
         sameSite: 'none',
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
     });
 
@@ -58,11 +58,20 @@ app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar, us
 });
 
 app.get('/logout', ({ cookie: { bearer, avatar, username }, set }) => {
-    bearer.remove();
-    // avatar.remove();
-    // username.remove();
+    bearer.set({
+        maxAge: 0,
+        path: '/',
+    });
+    avatar.set({
+        maxAge: 0,
+        path: '/',
+    });
+    username.set({
+        maxAge: 0,
+        path: '/',
+    });
 
-    set.redirect = '/';
+    set.redirect = '/?referer=/auth/logout';
     set.status = 'Permanent Redirect';
     return 'Redirecting';
 });
