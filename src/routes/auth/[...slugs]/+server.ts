@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia';
 import { DiscordAuth, Scopes } from 'discord-auth.ts';
+import type { AccessToken } from 'discord-auth.ts/src/interfaces/user/accessToken';
 
 const app = new Elysia({ prefix: '/auth' });
 
@@ -13,20 +14,41 @@ app.get('/', ({ set }) => {
     return 'redirecting to discord';
 });
 
-app.get('/callback', async ({ query: { code }, set }) => {
+app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar } }) => {
     if (!code) {
         set.status = 'Bad Request';
         return;
     }
-    const accessToken = await oauth2.accessHandler().tokenExchange(code);
-    // @ts-ignore
+    const accessToken = await oauth2.accessHandler().tokenExchange(code) as AccessToken;
     const userData = await oauth2.user(accessToken).getUser();
+    const avatarURL = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
 
-    const token = await oauth2.user(accessToken).getAccessToken();
+    bearer.set({
+        value: accessToken.access_token,
+        httpOnly: true,
+        path: '/',
+        maxAge: accessToken.expires_in,
+        expires: new Date(accessToken.expires_in),
+        sameSite: 'strict',
+    });
 
-    const avatar = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
+    avatar.set({
+        value: avatarURL,
+        path: '/',
+        maxAge: accessToken.expires_in,
+        expires: new Date(accessToken.expires_in),
+        sameSite: 'strict',
+        httpOnly: false,
+    });
 
-    return { userData, avatar, token };
+    set.redirect = '/';
+    set.status = 'Permanent Redirect';
+
+    return 'Redirecting';
+});
+
+app.get('/avatar', () => {
+
 });
 
 type RequestHandler = (v: { request: Request; }) => Response | Promise<Response>;
