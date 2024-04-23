@@ -1,8 +1,3 @@
-<script lang="ts">
-	import { page } from '$app/stores';
-	import { Button } from '$lib/components/ui/button';
-</script>
-
 <svelte:head>
 	<!-- Primary Meta Tags -->
 	<title>Moonstone Island Mod Loader</title>
@@ -32,7 +27,3 @@
 
 	<!-- Meta Tags Generated with https://metatags.io -->
 </svelte:head>
-
-<Button href="/docs" aria-current={$page.url.pathname === '/docs'}
-	>To Docs</Button
->
