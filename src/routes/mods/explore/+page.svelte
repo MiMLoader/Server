@@ -10,12 +10,12 @@
 	});
 
 	onMount(() => {
-		fetch('modList')
-			.then((res) => {
-				return res.json();
+		fetch('https://modcdn-worker.astraeffect.workers.dev/api/modlist')
+			.then(async (res) => {
+				return await res.json();
 			})
-			.then((res) => {
-				modListPromiseResolve(res);
+			.then((modList: Mod[]) => {
+				modListPromiseResolve(modList);
 			});
 	});
 </script>
@@ -46,7 +46,7 @@
 
 <div class="flex flex-wrap items-center justify-center">
 	{#await modListPromise}
-		{#each [1, 1, 1, 1, 1, 1] as num }
+		{#each [1, 1, 1, 1, 1, 1] as i}
 			<ModCardSkeleton />
 		{/each}
 	{:then modList}

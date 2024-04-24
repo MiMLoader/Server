@@ -6,8 +6,9 @@
 
 <Card.Root class="m-4 clamp">
 	<Card.Header>
-		<Card.Title>
+		<Card.Title class="flex justify-between">
 			<Skeleton class="h-5 w-20" />
+			<Skeleton class="h-[18px] w-20" />
 		</Card.Title>
 		<Skeleton class="h-[19px] w-100" />
 		<Skeleton class="h-[19px] w-60 rounded-full" />
@@ -19,8 +20,8 @@
 		<Skeleton id="version" class="h-[35px] w-100" />
 	</Card.Content>
 	<Card.Footer class="flex justify-between">
-		<Skeleton class="h-[18px] w-20" />
-		<Skeleton class="h-[25px] w-20" />
+		<Skeleton class="h-[38px] w-20" />
+		<Skeleton class="h-[38px] w-20" />
 	</Card.Footer>
 </Card.Root>
 

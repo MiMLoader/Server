@@ -1,6 +1,6 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "modcdn-worker"
-main = "src/index.js"
+main = "src/index.ts"
 compatibility_date = "2024-04-19"
 compatibility_flags = ["nodejs_compat"]
 
@@ -10,3 +10,8 @@ workers_dev = true
 [[r2_buckets]]
 binding = "MOD_BUCKET"
 bucket_name = "mods"
+
+[[d1_databases]]
+binding = "MOD_DB" 
+database_name = "prod-d1-modcdn"
+database_id = "f6178a59-724c-4e4a-918d-30f1357019b8"

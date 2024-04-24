@@ -13,10 +13,10 @@ app.get('/', ({ set }) => {
     return 'redirecting to discord';
 });
 
-app.get('/callback', async ({ query: { code }, set, cookie: { bearer, avatar, username } }) => {
-    if (!code) {
+app.get('/callback', async ({ query: { code, error }, set, cookie: { bearer, avatar, username } }) => {
+    if (!code || error) {
         set.status = 'Bad Request';
-        return;
+        return 'Bad Request';
     }
     const accessToken = await oauth2.accessHandler().tokenExchange(code) as AccessToken;
     const userData = await oauth2.user(accessToken).getUser();

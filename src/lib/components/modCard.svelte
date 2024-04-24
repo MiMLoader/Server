@@ -11,36 +11,39 @@
 	export let mod: Mod;
 
 	const selected = {
-		label: mod.versions.at(-1),
-		value: mod.versions.at(-1),
+		label: mod.Versions.at(-1),
+		value: mod.Versions.at(-1),
 	};
 </script>
 
 <Card.Root class="m-4 clamp">
 	<Card.Header>
-		<Card.Title>{mod.name}</Card.Title>
-		<Card.Description>{mod.description}</Card.Description>
+		<Card.Title class="flex justify-between items-center">
+			<span>{mod.Name}</span>
+			<Card.Description>{mod.Author}</Card.Description>
+		</Card.Title>
+		<Card.Description>{mod.Description}</Card.Description>
 		<Card.Description>
-			{#if mod.tags !== undefined && mod.tags !== null}
-				{#each mod.tags as tag}
+			{#if mod.Tags !== undefined && mod.Tags !== null}
+				{#each mod.Tags as tag}
 					<Badge variant="outline">{tag.toUpperCase()}</Badge>
 				{/each}
 			{/if}
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<Label for={`version-${mod.author}-${mod.name}`}>Version</Label>
+		<Label for={`version-${mod.Author}-${mod.Name}`}>Version</Label>
 		<Select.Root
 			{selected}
 			onSelectedChange={(v) => {
 				v && ((selected.label = v.label), (selected.value = v.value));
 			}}
 		>
-			<Select.Trigger id={`version-${mod.author}-${mod.name}`}>
+			<Select.Trigger id={`version-${mod.Author}-${mod.Name}`}>
 				<Select.Value />
 			</Select.Trigger>
 			<Select.Content>
-				{#each mod.versions as version}
+				{#each mod.Versions as version}
 					<Select.Item value={version} label={version}
 						>{version}</Select.Item
 					>
@@ -49,15 +52,21 @@
 		</Select.Root>
 	</Card.Content>
 	<Card.Footer class="flex justify-between">
-		<Card.Description>{mod.author}</Card.Description>
+		<Button
+			variant="secondary"
+			href={`/mods/${mod.Author.toLowerCase()}/${mod.Name.toLowerCase()}?version=${selected.value}`}
+			>View</Button
+		>
 		<Popover.Root portal={null}>
-			<Popover.Trigger>Install</Popover.Trigger>
+			<Popover.Trigger>
+				<Button>Install</Button>
+			</Popover.Trigger>
 			<Popover.Content class="flex space-x-3 size-min">
 				<Button
 					variant="secondary"
 					on:click={() => {
 						window.open(
-							`/mods/${mod.author}/${mod.name}/download?version=${selected.value}`,
+							`/mods/${mod.Author.toLowerCase()}/${mod.Name.toLowerCase()}/download?version=${selected.value}`,
 						);
 					}}>Manual</Button
 				>
@@ -79,7 +88,7 @@
 							<AlertDialog.Action
 								on:click={() => {
 									window.open(
-										`/mods/${mod.author}/${mod.name}/download?version=${selected.value}`,
+										`/mods/${mod.Author}/${mod.Name}/download?version=${selected.value}`,
 									);
 								}}>Manual Install</AlertDialog.Action
 							>
