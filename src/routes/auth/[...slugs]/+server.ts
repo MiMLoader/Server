@@ -10,6 +10,8 @@ const oauth2 = new DiscordAuth('1179513611719295106', Bun.env.DISCORD_SECRET, 'h
 app.get('/', ({ set }) => {
     const oauth2Link = oauth2.getAuthUrl();
     set.redirect = oauth2Link;
+    set.status = 'Temporary Redirect';
+    
     return 'redirecting to discord';
 });
 
