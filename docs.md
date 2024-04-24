@@ -26,12 +26,12 @@ Creating a mod with miml is very simple. First is the config file (mod.json), th
 Lets go over each of these fields:
 - `name`: The name of the mod, this is used to identify the mod and is used in the mod list. Assets are also served under this name.
 - `description`: A description of the mod, keep it short and sweet.
-- `author`: The authors of the mod. You silly!
+- `author`: The author of the mod. You silly!
 - `version`: The version of the mod. (using [semver](https://semver.org/))
 - `homepage`: The homepage of the mod (if using a hosting provider that supports it use `/download?version` so the mimlauncher can download your mod automatically).
 - `preload`: Whether or not the mod should be loaded in a node process. (set to false to disable or a path to the script to run (relative to the mod root))
 - `main`: The main file of the mod, this is the file that will be executed when the mod is loaded. (relative to the mod root)
-- `dependencies`: A list of dependencies that the mod requires. (should be the link ending of the mod on mod.io)
+- `dependencies`: A list of dependencies that the mod requires. (should be the name/id of the mod)
 - `priority`: The priority of the mod, this is used to determine the order in which mods are loaded. (lower number = lower priority, 5 should only be used for things like APIs)
 - `tags`: (optional) List of tags that describe the mods function.
 
@@ -45,7 +45,7 @@ Now that we have the config file we can start writing the mod. The main file of 
 class ExampleMod extends MimlAPI {
     constructor() {
         // use your mods name
-        super('exampleMod');
+        super('example-mod');
         console.log('Loading example mod');
 
         // run the main code
@@ -89,10 +89,10 @@ Modify an existing recipe.
 - method: string - The method to modify (e.g. "player", "furnace", "workbench")
 - name: string - The name of the recipe to modify
 - materials: Array - The materials to set the recipe to (e.g. "wood:3,stone:2")
-- locked: boolean - Don't know? (optional)
-- hidden: boolean - Don't know? (optional)
+- locked: boolean - If the recipe is locked by default, can be unlocked with a quest
+- hidden: boolean - If the recipe should be hidden in UI's while locked.
 - priority: number - Quest completed to unlock (optional) (e.g. "blacksmith quest1")
-- verySpecial: boolean - Don't know? (optional)
+- verySpecial: boolean - Whether the alchemist *strikes a pose* when they craft the item for the first time
 
 ```js
 this.recipe.modify("player", "gate", "wood:3,store:2");
