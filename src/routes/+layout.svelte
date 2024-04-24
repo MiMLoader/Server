@@ -71,5 +71,5 @@
 
 <Toaster />
 
-<span class="block mb-10" />
+<span class="block mb-[50px]" />
 <slot />
