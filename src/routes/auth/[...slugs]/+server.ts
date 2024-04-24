@@ -5,7 +5,8 @@ import type { AccessToken } from 'discord-auth.ts/src/interfaces/user/accessToke
 const app = new Elysia({ prefix: '/auth' });
 
 if (!Bun.env.DISCORD_SECRET) throw new Error('Add discord secret to env file');
-const oauth2 = new DiscordAuth('1179513611719295106', Bun.env.DISCORD_SECRET, 'http://localhost:5173/auth/callback', [Scopes.IDENTIFY]);
+if (!Bun.env.DISCORD_CALLBACK) throw new Error('Add discord callback to env file')
+const oauth2 = new DiscordAuth('1179513611719295106', Bun.env.DISCORD_SECRET, Bun.env.DISCORD_CALLBACK, [Scopes.IDENTIFY]);
 
 app.get('/', ({ set }) => {
     const oauth2Link = oauth2.getAuthUrl();
