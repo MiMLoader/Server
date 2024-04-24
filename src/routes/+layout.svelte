@@ -62,7 +62,7 @@
 								>My Mods</DropdownMenu.Item
 							>
 							<DropdownMenu.Separator />
-							<DropdownMenu.Item>Profile</DropdownMenu.Item>
+							<!-- <DropdownMenu.Item>Profile</DropdownMenu.Item> -->
 							<DropdownMenu.Item href="/auth/logout"
 								>Logout</DropdownMenu.Item
 							>
@@ -83,7 +83,7 @@
 <span class="block mb-[70px]" />
 <slot />
 
-<footer class="bg-background bottom-0">
+<footer class="bg-background">
 	<div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
 		<div class="lg:flex lg:items-start lg:gap-8">
 			<div
@@ -161,7 +161,7 @@
 
 		<div class="mt-8 border-t pt-8 border-gray-800">
 			<div class="sm:flex sm:justify-between">
-				<p class="text-xs text-gray-400">
+				<p class="text-xs text-foreground opacity-75">
 					© 2024. MiMLoader. All rights reserved.
 				</p>
 
