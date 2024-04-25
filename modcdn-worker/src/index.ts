@@ -14,6 +14,17 @@ const hasValidHeader = (request, env) => {
 	return request.headers.get('X-Custom-Auth-Key') === env.AUTH_KEY_SECRET;
 };
 
+
+const createHeaders = (request, ...additionalHeaders) => {
+	return {
+		"Access-Control-Allow-Origin": "*",
+		"Access-Control-Allow-Methods": "GET",
+		"Access-Control-Max-Age": "86400",
+		"Access-Control-Allow-Headers": request.headers.get("Access-Control-Request-Headers"),
+		...additionalHeaders
+	};
+};
+
 const authorizeRequest = (request, env) => {
 	switch (request.method) {
 		case 'PUT':
@@ -33,7 +44,7 @@ export default {
 		const urlArray = url.pathname.split('/');
 
 		if (!authorizeRequest(request, env)) {
-			return new Response('Forbidden', { status: 403 });
+			return new Response('Forbidden', { status: 403, headers: createHeaders(request) });
 		}
 
 		switch (request.method) {
@@ -68,14 +79,7 @@ export default {
 								}
 							}
 
-							const response = new Response(JSON.stringify(results), {
-								headers: {
-									"Access-Control-Allow-Origin": "*",
-									"Access-Control-Allow-Methods": "GET",
-									"Access-Control-Max-Age": "86400",
-									"Access-Control-Allow-Headers": request.headers.get("Access-Control-Request-Headers")
-								}
-							});
+							const response = new Response(JSON.stringify(results), { headers: createHeaders(request) });
 
 							return response;
 						}
@@ -110,7 +114,7 @@ export default {
 									}
 								}
 
-								return Response.json(results);
+								return Response.json(results, { headers: createHeaders(request) });
 							}
 
 							const { results } = await env.MOD_DB.prepare(
@@ -138,7 +142,7 @@ export default {
 								}
 							}
 
-							return Response.json(results);
+							return Response.json(results, { headers: createHeaders(request) });
 						}
 						default:
 							return new Response('API route not found.');
@@ -150,10 +154,8 @@ export default {
 				if (object === null) {
 					return new Response('Object Not Found', { status: 404 });
 				}
-
-				const headers = new Headers();
-				object.writeHttpMetadata(headers);
-				headers.set('etag', object.httpEtag);
+				
+				const headers = createHeaders(request, `etag: ${object.etag}`);
 
 				return new Response(object.body, {
 					headers,
@@ -161,14 +163,12 @@ export default {
 			}
 			case 'DELETE':
 				await env.MOD_BUCKET.delete(key);
-				return new Response('Deleted!');
+				return new Response('Deleted!', { headers: createHeaders(request) });
 
 			default:
 				return new Response('Method Not Allowed', {
 					status: 405,
-					headers: {
-						Allow: 'PUT, GET, DELETE',
-					},
+					headers: createHeaders(request, 'Allow: PUT, GET, DELETE'),
 				});
 		}
 	}
