@@ -99,9 +99,3 @@
 		</Popover.Root>
 	</Card.Footer>
 </Card.Root>
-
-<style>
-	:global(.clamp) {
-		width: clamp(345px, 400px, 400px);
-	}
-</style>

@@ -32,6 +32,7 @@
 		</li>
 		<li><a href="/mods/explore">Mods</a></li>
 		<li><a href="/launcher">Launcher</a></li>
+		<li><a href="/docs">APIDocs</a></li>
 		<li class="ml-auto h-[40]">
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
