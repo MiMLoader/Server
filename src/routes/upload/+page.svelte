@@ -38,7 +38,7 @@
 			if (!modJsonString) throw new Error("Couldn't read file");
 			const modJson = JSON.parse(modJsonString as string);
 
-			modJson.Versions = [modJson.version];
+			modJson.versions = [modJson.version];
 			modJsonPromiseResolve(modJson);
 		});
 		reader.readAsText(e.target.files[0]);

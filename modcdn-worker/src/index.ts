@@ -8,7 +8,8 @@ export interface Mod {
 	author: string;
 	description: string;
 	versions: string[];
-	tags?: string[] | string | null;
+	tags?: string[] | null;
+	version?: string;
 }
 
 const hasValidHeader = (request, env) => {
@@ -50,18 +51,36 @@ export default {
 		switch (request.method) {
 			case 'PUT':
 				if (url.pathname.startsWith('/db')) {
-					const modJson: Mod = JSON.parse(request.body);
+					const modJson: Mod = await request.json();
 
 					const { results } = await env.MOD_DB.prepare(
-						"SELECT * FROM Mods WHERE UPPER(Author) = UPPER(?) "
+						"SELECT * FROM Mods WHERE UPPER(Author) = UPPER(?) AND UPPER(Name) = UPPER(?)"
 					)
-						.bind(author)
+						.bind(modJson.author, modJson.name)
 						.all();
 
-					const res = await env.MOD_DB.prepare(
-						`INSERT INTO MOD(name, author, description, versions, tags) VALUE (${modJson.name}, ${modJson.author}, ${modJson.description}, ${modJson.versions}, ${modJson.tags || null})`
-					);
-					return new Response(`${res}`);
+					if (results.length === 0) {
+						const info = await env.MOD_DB.prepare(
+							"INSERT INTO Mods (name, author, description, versions, tags) VALUES (?, ?, ?, ?, ?)"
+						)
+							.bind(modJson.name, modJson.author, modJson.description, modJson.version, modJson.tags.join(', '))
+							.run();
+						if (info.error) {
+							return new Response(info.error);
+						}
+					} else {
+						const versionsString = [results[0].Versions, modJson.version].join(', ');
+						const info = await env.MOD_DB.prepare(
+							"UPDATE Mods SET versions = ? WHERE UPPER(Author) = UPPER(?) AND UPPER(Name) = UPPER(?)"
+						)
+							.bind(versionsString, modJson.author, modJson.name)
+							.run();
+						if (info.error) {
+							return new Response(info.error);
+						}
+					}
+
+					return new Response('200');
 				}
 				await env.MOD_BUCKET.put(key, request.body);
 				return new Response(`Put ${key} successfully!`);
@@ -75,20 +94,20 @@ export default {
 								.all();
 
 							for (let i = 0; i < results.length; i++) {
-								if (results[i].versions.includes(', ')) {
-									results[i].versions = (
-										results[i].versions as string
+								if (results[i].Versions.includes(', ')) {
+									results[i].Versions = (
+										results[i].Versions as string
 									).split(', ');
 								} else {
-									results[i].versions = [results[i].versions as string];
+									results[i].Versions = [results[i].Versions as string];
 								}
-								if (results[i].tags !== undefined) {
-									if (results[i].tags?.includes(', ')) {
-										results[i].tags = (results[i].tags as string).split(
+								if (results[i].Tags !== undefined) {
+									if (results[i].Tags?.includes(', ')) {
+										results[i].Tags = (results[i].Tags as string).split(
 											', ',
 										);
 									} else {
-										results[i].tags = [results[i].tags as string];
+										results[i].Tags = [results[i].Tags as string];
 									}
 								}
 							}

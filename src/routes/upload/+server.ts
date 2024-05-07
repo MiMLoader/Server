@@ -10,7 +10,8 @@ app.post('/', ({ body, set }) => {
 
     fetch('https://modcdn-worker.astraeffect.workers.dev/db', {
         headers: headers,
-        body: JSON.stringify(body.modJson)
+        body: JSON.stringify(body.modJson),
+        method: 'PUT'
     }).then(() => {
         headers.append('Content-Type', 'application/zip');
 
