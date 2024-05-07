@@ -1,19 +1,19 @@
 export interface Env {
 	MOD_DB: D1Database;
 	MOD_BUCKET: R2Bucket;
+	AUTH_KEY_SECRET: string;
 }
 export interface Mod {
-	Name: string;
-	Author: string;
-	Description: string;
-	Versions: string[] | string;
-	Tags?: string[] | string | null;
+	name: string;
+	author: string;
+	description: string;
+	versions: string[];
+	tags?: string[] | string | null;
 }
 
 const hasValidHeader = (request, env) => {
-	return request.headers.get('X-Custom-Auth-Key') === env.AUTH_KEY_SECRET;
+	return request.headers.get('Authorization') === `Bearer ${env.AUTH_KEY_SECRET}`;
 };
-
 
 const createHeaders = (request, ...additionalHeaders) => {
 	return {
@@ -49,6 +49,20 @@ export default {
 
 		switch (request.method) {
 			case 'PUT':
+				if (url.pathname.startsWith('/db')) {
+					const modJson: Mod = JSON.parse(request.body);
+
+					const { results } = await env.MOD_DB.prepare(
+						"SELECT * FROM Mods WHERE UPPER(Author) = UPPER(?) "
+					)
+						.bind(author)
+						.all();
+
+					const res = await env.MOD_DB.prepare(
+						`INSERT INTO MOD(name, author, description, versions, tags) VALUE (${modJson.name}, ${modJson.author}, ${modJson.description}, ${modJson.versions}, ${modJson.tags || null})`
+					);
+					return new Response(`${res}`);
+				}
 				await env.MOD_BUCKET.put(key, request.body);
 				return new Response(`Put ${key} successfully!`);
 			case 'GET': {
@@ -61,20 +75,20 @@ export default {
 								.all();
 
 							for (let i = 0; i < results.length; i++) {
-								if (results[i].Versions.includes(', ')) {
-									results[i].Versions = (
-										results[i].Versions as string
+								if (results[i].versions.includes(', ')) {
+									results[i].versions = (
+										results[i].versions as string
 									).split(', ');
 								} else {
-									results[i].Versions = [results[i].Versions as string];
+									results[i].versions = [results[i].versions as string];
 								}
-								if (results[i].Tags !== undefined) {
-									if (results[i].Tags?.includes(', ')) {
-										results[i].Tags = (results[i].Tags as string).split(
+								if (results[i].tags !== undefined) {
+									if (results[i].tags?.includes(', ')) {
+										results[i].tags = (results[i].tags as string).split(
 											', ',
 										);
 									} else {
-										results[i].Tags = [results[i].Tags as string];
+										results[i].tags = [results[i].tags as string];
 									}
 								}
 							}
@@ -86,7 +100,6 @@ export default {
 						case 'mods': {
 							const author = urlArray.slice(3, 4)[0];
 							const name = urlArray.slice(4, 5)[0];
-							console.log(author, name);
 
 							if (!name) {
 								const { results } = await env.MOD_DB.prepare(
@@ -96,20 +109,20 @@ export default {
 									.all();
 
 								for (let i = 0; i < results.length; i++) {
-									if (results[i].Versions.includes(', ')) {
-										results[i].Versions = (
-											results[i].Versions as string
+									if (results[i].versions.includes(', ')) {
+										results[i].versions = (
+											results[i].versions as string
 										).split(', ');
 									} else {
-										results[i].Versions = [results[i].Versions as string];
+										results[i].versions = [results[i].versions as string];
 									}
-									if (results[i].Tags !== undefined) {
-										if (results[i].Tags?.includes(', ')) {
-											results[i].Tags = (results[i].Tags as string).split(
+									if (results[i].tags !== undefined) {
+										if (results[i].tags?.includes(', ')) {
+											results[i].tags = (results[i].tags as string).split(
 												', ',
 											);
 										} else {
-											results[i].Tags = [results[i].Tags as string];
+											results[i].tags = [results[i].tags as string];
 										}
 									}
 								}
@@ -124,20 +137,20 @@ export default {
 								.all();
 
 							for (let i = 0; i < results.length; i++) {
-								if (results[i].Versions.includes(', ')) {
-									results[i].Versions = (
-										results[i].Versions as string
+								if (results[i].versions.includes(', ')) {
+									results[i].versions = (
+										results[i].versions as string
 									).split(', ');
 								} else {
-									results[i].Versions = [results[i].Versions as string];
+									results[i].versions = [results[i].versions as string];
 								}
-								if (results[i].Tags !== undefined) {
-									if (results[i].Tags?.includes(', ')) {
-										results[i].Tags = (results[i].Tags as string).split(
+								if (results[i].tags !== undefined) {
+									if (results[i].tags?.includes(', ')) {
+										results[i].tags = (results[i].tags as string).split(
 											', ',
 										);
 									} else {
-										results[i].Tags = [results[i].Tags as string];
+										results[i].tags = [results[i].tags as string];
 									}
 								}
 							}
@@ -154,7 +167,7 @@ export default {
 				if (object === null) {
 					return new Response('Object Not Found', { status: 404 });
 				}
-				
+
 				const headers = createHeaders(request, `etag: ${object.etag}`);
 
 				return new Response(object.body, {
