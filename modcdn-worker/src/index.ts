@@ -19,9 +19,9 @@ const hasValidHeader = (request, env) => {
 const createHeaders = (request, ...additionalHeaders) => {
 	return {
 		"Access-Control-Allow-Origin": "*",
-		"Access-Control-Allow-Methods": "GET",
+		"Access-Control-Allow-Methods": "GET, PUT, DELETE",
 		"Access-Control-Max-Age": "86400",
-		"Access-Control-Allow-Headers": request.headers.get("Access-Control-Request-Headers"),
+		"Access-Control-Allow-Headers": "*",
 		...additionalHeaders
 	};
 };
@@ -94,25 +94,25 @@ export default {
 								.all();
 
 							for (let i = 0; i < results.length; i++) {
-								if (results[i].Versions.includes(', ')) {
-									results[i].Versions = (
-										results[i].Versions as string
+								if (results[i].versions.includes(', ')) {
+									results[i].versions = (
+										results[i].versions as string
 									).split(', ');
 								} else {
-									results[i].Versions = [results[i].Versions as string];
+									results[i].versions = [results[i].versions as string];
 								}
-								if (results[i].Tags !== undefined) {
-									if (results[i].Tags?.includes(', ')) {
-										results[i].Tags = (results[i].Tags as string).split(
+								if (results[i].tags !== undefined) {
+									if (results[i].tags?.includes(', ')) {
+										results[i].tags = (results[i].tags as string).split(
 											', ',
 										);
 									} else {
-										results[i].Tags = [results[i].Tags as string];
+										results[i].tags = [results[i].tags as string];
 									}
 								}
 							}
 
-							const response = new Response(JSON.stringify(results), { headers: createHeaders(request) });
+							const response = new Response(JSON.stringify(results), { headers: createHeaders(request, { "Content-Type": "application/json" }) });
 
 							return response;
 						}
