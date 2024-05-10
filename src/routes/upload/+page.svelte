@@ -12,6 +12,7 @@
 	import ModCard from '$lib/components/modCard.svelte';
 	import ModCardSkeleton from '$lib/components/modCardSkeleton.svelte';
 	import type { Mod } from '../../app';
+	import { goto } from '$app/navigation';
 
 	$: tab = 'info';
 
@@ -70,14 +71,20 @@
 
 		const data = new FormData();
 		data.append('modJson', JSON.stringify(await modJsonPromise));
-		data.append('modZip', (await modZipPromise));
+		data.append('modZip', await modZipPromise);
 
 		fetch('/upload', {
 			method: 'POST',
 			body: data,
 		}).then((response) => {
-			if (response.status !== 200)
-				return toast.error('Something went wrong when loading mod.');
+			if (response.status !== 200) {
+				response.text().then((response) => {
+					return toast.error(
+						`Something went wrong when loading mod. ${response}`,
+					);
+				});
+			}
+			goto('/mods');
 		});
 	};
 </script>

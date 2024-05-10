@@ -2,8 +2,18 @@ import { Elysia, t } from 'elysia';
 
 const app = new Elysia({ prefix: '/upload' });
 
-app.post('/', ({ body, set }) => {
+app.post('/', ({ body, set, cookie: { bearer, avatar, username } }) => {
     const modUrl = `https://modcdn-worker.astraeffect.workers.dev/${body.modJson.author}+${body.modJson.name}@${body.modJson.version}.zip`.toLowerCase();
+
+    if (!bearer.value) {
+        set.status = 'Forbidden';
+        return 'Error uploading your mod, please login with discord.';
+    }
+
+    if (body.modJson.author.toLowerCase() !== username.value.toLowerCase()) {
+        set.status = 'Bad Request';
+        return 'Error uploading your mod, Username and Author must be the same.';
+    }
 
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${Bun.env.AUTH_KEY_SECRET}`);

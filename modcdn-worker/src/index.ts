@@ -69,7 +69,7 @@ export default {
 							return new Response(info.error);
 						}
 					} else {
-						const versionsString = [results[0].Versions, modJson.version].join(', ');
+						const versionsString = results[0].versions ? [results[0].versions, modJson.version].join(', ') : modJson.version;
 						const info = await env.MOD_DB.prepare(
 							"UPDATE Mods SET versions = ? WHERE UPPER(Author) = UPPER(?) AND UPPER(Name) = UPPER(?)"
 						)
