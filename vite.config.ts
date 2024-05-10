@@ -6,5 +6,8 @@ export default defineConfig({
 	assetsInclude: [
 		"**/*.html",
 		"**/*.md"
-	]
+	],
+	server: {
+		host: true,
+	}
 });

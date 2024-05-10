@@ -3,11 +3,17 @@
 	import ModCardSkeleton from '$lib/components/modCardSkeleton.svelte';
 	import type { Mod } from '../../../app';
 	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { goto } from '$app/navigation';
 
 	let modListPromiseResolve: (value: Mod[]) => void;
 	const modListPromise: Promise<Mod[]> = new Promise((resolve) => {
 		modListPromiseResolve = resolve;
 	});
+
+	const redirectUpload = () => {
+		goto('/upload');
+	};
 
 	onMount(() => {
 		fetch('https://modcdn-worker.astraeffect.workers.dev/api/modlist')
@@ -44,6 +50,7 @@
 	<!-- Meta Tags Generated with https://metatags.io -->
 </svelte:head>
 
+<Button on:click={redirectUpload} class="m-2" variant="outline">Upload</Button>
 <div class="flex flex-wrap items-center justify-center">
 	{#await modListPromise}
 		{#each [1, 1, 1, 1, 1, 1] as i}

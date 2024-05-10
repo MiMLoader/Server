@@ -11,9 +11,9 @@ declare global {
 }
 
 export interface Mod {
-	Name: string;
-	Author: string;
-	Description: string;
-	Versions: string[] | string;
-	Tags?: string[] | string | null;
+	name: string;
+	author: string;
+	description: string;
+	versions: string[] | string;
+	tags?: string[] | null;
 }

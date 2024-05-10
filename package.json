@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "prod": "bun --bun run build/index.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
@@ -32,7 +33,7 @@
     "svelte-preprocess"
   ],
   "dependencies": {
-    "bits-ui": "^0.21.4",
+    "bits-ui": "^0.21.7",
     "clsx": "^2.1.0",
     "discord-auth.ts": "^1.0.9",
     "elysia": "^1.0.13",

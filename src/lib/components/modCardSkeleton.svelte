@@ -24,9 +24,3 @@
 		<Skeleton class="h-[38px] w-20" />
 	</Card.Footer>
 </Card.Root>
-
-<style>
-	:global(.clamp) {
-		width: clamp(345px, 400px, 400px);
-	}
-</style>
