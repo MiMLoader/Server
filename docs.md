@@ -5,15 +5,15 @@ Creating a mod with miml is very simple. First is the config file (mod.json), th
 ```json
 // mod.json
 {
-    "name": "example-mod",
+    "name": "exampleMod",
     "description": "A really cool example mod.",
-    "author": "me, my friend",
+    "author": "me",
     "version": "1.0.0",
-    "homepage": "https://mods.mimloader.com/example-mod",
+    "homepage": "https://mimloader.com/mods/me/examplemod",
     "preload": false,
     "main": "index.js",
     "dependencies": [
-        "example-dependency"
+        "user+exampleDependency@1.0.0"
     ],
     "priority": 1,
     "tags": [
@@ -45,7 +45,7 @@ Now that we have the config file we can start writing the mod. The main file of 
 class ExampleMod extends MimlAPI {
     constructor() {
         // use your mods name
-        super('example-mod');
+        super('exampleMod');
         console.log('Loading example mod');
 
         // run the main code
