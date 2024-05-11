@@ -68,7 +68,9 @@
 								>Logout</DropdownMenu.Item
 							>
 						{:else}
-							<DropdownMenu.Item href="/auth"
+							<DropdownMenu.Item
+								href="/auth"
+								data-umami-event="Login"
 								>Login</DropdownMenu.Item
 							>
 						{/if}

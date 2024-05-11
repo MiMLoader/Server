@@ -60,7 +60,12 @@
 				>View</Button
 			>
 		{:else}
-			<Button variant="secondary">View</Button>
+			<Button
+				data-umami-event="Mod View"
+				data-umami-event-modName={mod.name}
+				data-umami-event-modAuthor={mod.author}
+				variant="secondary">View</Button
+			>
 		{/if}
 		<Popover.Root portal={null}>
 			<Popover.Trigger>
@@ -69,6 +74,10 @@
 			{#if !disabled}
 				<Popover.Content class="flex space-x-3 size-min">
 					<Button
+						data-umami-event="Mod Download"
+						data-umami-event-modName={mod.name}
+						data-umami-event-modAuthor={mod.author}
+						data-umami-event-modVersion={selected.value}
 						variant="secondary"
 						on:click={() => {
 							window.open(
