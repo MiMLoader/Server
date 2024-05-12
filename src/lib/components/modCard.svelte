@@ -56,28 +56,27 @@
 		{#if !disabled}
 			<Button
 				variant="secondary"
+				data-umami-event="Mod View"
+				data-umami-event-modName={mod.name}
+				data-umami-event-modAuthor={mod.author}
 				href={`/mods/${mod.author.toLowerCase()}/${mod.name.toLowerCase()}?version=${selected.value}`}
 				>View</Button
 			>
 		{:else}
-			<Button
-				data-umami-event="Mod View"
-				data-umami-event-modName={mod.name}
-				data-umami-event-modAuthor={mod.author}
-				variant="secondary">View</Button
-			>
+			<Button variant="secondary">View</Button>
 		{/if}
 		<Popover.Root portal={null}>
 			<Popover.Trigger>
-				<Button>Install</Button>
+				<Button
+					data-umami-event="Mod Download"
+					data-umami-event-modName={mod.name}
+					data-umami-event-modAuthor={mod.author}
+					data-umami-event-modVersion={selected.value}>Install</Button
+				>
 			</Popover.Trigger>
 			{#if !disabled}
 				<Popover.Content class="flex space-x-3 size-min">
 					<Button
-						data-umami-event="Mod Download"
-						data-umami-event-modName={mod.name}
-						data-umami-event-modAuthor={mod.author}
-						data-umami-event-modVersion={selected.value}
 						variant="secondary"
 						on:click={() => {
 							window.open(
